@@ -1,2 +1,3 @@
 # Beam-Dataproc-Python-Section02
-Big Data final project
+## Project Focus:
+ A big data final project to develop the Google Page Rank System Using DataProc Python.
