@@ -10,5 +10,7 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
 4. #### Amulya Mallepalli
 5. #### Keerthi Muli  
       [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Keerthi-Muli-WorkSpace)
+      
+      [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Keerthi-Muli)
   
 7. #### Vinay Kumar Paspula
