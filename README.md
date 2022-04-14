@@ -21,13 +21,21 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
    |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki)|
 
 3. #### Vineetha Batchu
-[Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vineetha-Batchu-WorkSpace)
+   [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vineetha-Batchu-WorkSpace)
 
-[Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vineetha-Batchu)
+   [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vineetha-Batchu)
 
 4. #### Dhanusha Goud Dommati
-5. #### Amulya Mallepalli
-6. #### Keerthi Muli  
+      [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Dhanusha-Dommati-WorkSpace) 
+
+      [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Dhanusha-Dommati)
+      
+6. #### Amulya Mallepalli
+      [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Amulya-Mallepalli-WorkSpace)
+      
+      [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Amulya-Mallepalli)
+      
+8. #### Keerthi Muli  
       [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Keerthi-Muli-WorkSpace)
       
       [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Keerthi-Muli)
