@@ -1,5 +1,5 @@
 # This is Vineetha.
-#page-rank-beam
+# page-rank-beam java
 
 Java Quickstart for Apache Beam
 
