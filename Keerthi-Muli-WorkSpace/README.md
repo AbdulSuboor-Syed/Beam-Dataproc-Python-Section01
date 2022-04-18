@@ -17,4 +17,4 @@ mvn archetype:generate `
 
 ### Command Used For Executing Project In Poweshell
 
- mvn compile exec:java -D exec.mainClass=edu.nwmissouri.sixmusketeers.MinimalPageRankingKeerthiMuli
+ mvn compile exec:java -D exec.mainClass=edu.nwmissouri.sixmusketeers.keerthimuli.MinimalPageRankingKeerthiMuli
