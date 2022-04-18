@@ -33,7 +33,23 @@ import org.apache.beam.sdk.values.PCollectionList;
 import org.apache.beam.sdk.values.TypeDescriptors;
 
 public class MinimalPageRankBatchu {
+   // DEFINE DOFNS
+  // ==================================================================
+  // You can make your pipeline assembly code less verbose by defining
+  // your DoFns statically out-of-line.
+  // Each DoFn<InputT, OutputT> takes previous output
+  // as input of type InputT
+  // and transforms it to OutputT.
+  // We pass this DoFn to a ParDo in our pipeline.
 
+  /**
+   * DoFn Job1Finalizer takes KV(String, String List of outlinks) and transforms
+   * the value into our custom RankedPage Value holding the page's rank and list
+   * of voters.
+   * 
+   * The output of the Job1 Finalizer creates the initial input into our
+   * iterative Job 2.
+   */
   static class Job1Finalizer extends DoFn<KV<String, Iterable<String>>, KV<String, RankedPage>> {
     @ProcessElement
     public void processElement(@Element KV<String, Iterable<String>> element,
