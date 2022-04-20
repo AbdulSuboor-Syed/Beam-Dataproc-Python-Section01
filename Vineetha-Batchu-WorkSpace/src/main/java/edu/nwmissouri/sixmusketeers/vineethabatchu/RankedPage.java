@@ -27,6 +27,10 @@ public class RankedPage implements Serializable {
     public  void setVoters(ArrayList<VotingPage> voters){
         this.voters = voters;
     }
+    @Override
+    public String toString() {
+        return "RankedPage [key=" + key + ", voterList=" + voters + "]";
+    }
 
 
 }

@@ -17,6 +17,7 @@
  */
 package edu.nwmissouri.sixmusketeers.dhanushadommati;
 import java.util.Arrays;
+import java.io.*;
 
 
 import java.util.Collection;
@@ -34,6 +35,7 @@ import org.apache.beam.sdk.transforms.Filter;
 import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.Flatten;
 import org.apache.beam.sdk.transforms.MapElements;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionList;
@@ -57,12 +59,30 @@ public class MinimalPageRankDommati {
    * The output of the Job1 Finalizer creates the initial input into our
    * iterative Job 2.
    */
-  static class Job1Finalizer extends DoFn<KV<String, Iterable<String>>, KV<String, RankedPage>> {
+    static class Job1Finalizer extends DoFn<KV<String, Iterable<String>>, KV<String, RankedPage>> {
     @ProcessElement
     public void processElement(@Element KV<String, Iterable<String>> element,
         OutputReceiver<KV<String, RankedPage>> receiver) {
       Integer contributorVotes = 0;
-      if (element.getValue() instanceof CollectionCoder) {
+      if (element.getValue() instanceof Collection) {
+        contributorVotes = ((Collection<String>) element.getValue()).size();
+      }
+      ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
+      for (String voterName : element.getValue()) {
+        if (!voterName.isEmpty()) {
+          voters.add(new VotingPage(voterName, contributorVotes));
+        }
+      }
+      receiver.output(KV.of(element.getKey(), new RankedPage(element.getKey(), voters)));
+    }
+  }
+  
+  static class Job2Mapper extends DoFn<KV<String, RankedPage>, KV<String, RankedPage>> {
+    @ProcessElement
+    public void processElement(@Element KV<String, Iterable<String>> element,
+        OutputReceiver<KV<String, RankedPage>> receiver) {
+      Integer contributorVotes = 0;
+      if (element.getValue() instanceof Collection) {
         contributorVotes = ((Collection<String>) element.getValue()).size();
       }
       ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
@@ -75,6 +95,23 @@ public class MinimalPageRankDommati {
     }
   }
 
+  static class Job2Updater extends DoFn<KV<String, Iterable<RankedPage>>, KV<String, RankedPage>> {
+    @ProcessElement
+    public void processElement(@Element KV<String, Iterable<String>> element,
+        OutputReceiver<KV<String, RankedPage>> receiver) {
+      Integer contributorVotes = 0;
+      if (element.getValue() instanceof Collection) {
+        contributorVotes = ((Collection<String>) element.getValue()).size();
+      }
+      ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
+      for (String voterName : element.getValue()) {
+        if (!voterName.isEmpty()) {
+          voters.add(new VotingPage(voterName, contributorVotes));
+        }
+      }
+      receiver.output(KV.of(element.getKey(), new RankedPage(element.getKey(), voters)));
+    }
+  }
   public static void main(String[] args) {
 
     // Create a PipelineOptions object. This object lets us set various execution
@@ -96,9 +133,25 @@ public class MinimalPageRankDommati {
    
     PCollectionList<KV<String, String>> pCollList = PCollectionList.of(pCollectionKVList1).and(pCollectionKVList2).and(pCollectionKVList3).and(pCollectionKVList4).and(pCollectionKVList5);
     PCollection<KV<String, String>> l = pCollList.apply(Flatten.<KV<String,String>>pCollections());
-    PCollection<KV<String, Iterable<String>>> grouped =l.apply(GroupByKey.create());
-    PCollection<String> pColLinkString = grouped.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
-    pColLinkString.apply(TextIO.write().to("batchuout"));  
+
+    PCollection<KV<String, Iterable<String>>> grouped =l.apply(GroupByKey.<String, String>create());
+    //PCollection<KV<String, Iterable<String>>> grouped =l.apply(GroupByKey.create());
+     // Convert to a custom Value object (RankedPage) in preparation for Job 2
+     PCollection<KV<String, RankedPage>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
+ 
+     //PCollection<String> pColLinkString = job2in.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
+     PCollection<KV<String, RankedPage>> job2out = null; 
+     int iterations = 2;
+     for (int i = 1; i <= iterations; i++) {
+       // use job2in to calculate job2 out
+       // .... write code here
+       // update job2in so it equals the new job2out
+       // ... write code here
+     }
+
+
+    PCollection<String> pColLinkString = job2out.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
+    pColLinkString.apply(TextIO.write().to("Dhanuuout"));  
     p.run().waitUntilFinish();
     //batchuMapper1(p);
     //pcolLinks.apply(TextIO.write().to("batchuout"));
@@ -136,5 +189,35 @@ public class MinimalPageRankDommati {
       ));
       return pColKeyValuePairs;
 
-  }  
+
+
+  }
+  
+  /**
+ * Run one iteration of the Job 2 Map-Reduce process
+ * Notice how the Input Type to Job 2.
+ * Matches the Output Type from Job 2.
+ * How important is that for an iterative process?
+ * 
+ * @param kvReducedPairs - takes a PCollection<KV<String, RankedPage>> with
+ *                       initial ranks.
+ * @return - returns a PCollection<KV<String, RankedPage>> with updated ranks.
+ */
+private static PCollection<KV<String, RankedPage>> runJob2Iteration(
+  PCollection<KV<String, RankedPage>> kvReducedPairs) {
+
+PCollection<KV<String, RankedPage>> updatedOutput = null;
+return updatedOutput;
+}
+
+public static  void deleteFiles(){
+  final File file = new File("./");
+  for (File f : file.listFiles()){
+    if(f.getName().startsWith("Dhanuuout")){
+      f.delete();
+    }
+  }
+}
+
+}
 }
