@@ -134,7 +134,7 @@ public class MinimalPageRankBatchu {
         // Convert to a custom Value object (RankedPage) in preparation for Job 2
         PCollection<KV<String, RankedPage>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
  
-    //PCollection<String> pColLinkString = job2in.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
+    PCollection<String> pColLinkString = job2in.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
     PCollection<KV<String, RankedPage>> job2out = null; 
     int iterations = 2;
     for (int i = 1; i <= iterations; i++) {
@@ -224,13 +224,13 @@ PCollection<KV<String, RankedPage>> updatedOutput = null;
 return updatedOutput;
 }
 
-public static  void deleteFiles(){
-  final File file = new File("./");
-  for (File f : file.listFiles()){
-    if(f.getName().startsWith("batchu")){
-      f.delete();
-    }
-  }
-}
+// public static  void deleteFiles(){
+//   final File file = new File("./");
+//   for (File f : file.listFiles()){
+//     if(f.getName().startsWith("batchuout")){
+//       f.delete();
+//     }
+//   }
+// }
 
 }
