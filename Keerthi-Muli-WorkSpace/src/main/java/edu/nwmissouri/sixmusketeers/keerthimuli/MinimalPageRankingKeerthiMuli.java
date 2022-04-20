@@ -12,6 +12,7 @@ import org.apache.beam.sdk.transforms.Filter;
 import org.apache.beam.sdk.transforms.Flatten;
 import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.MapElements;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionList;
@@ -72,11 +73,13 @@ public class MinimalPageRankingKeerthiMuli {
     PCollection<KV<String, String>> mergedPcollection = pCollectionsList
         .apply(Flatten.<KV<String, String>>pCollections());
 
-    // Group By Key
-   PCollection<KV<String,Iterable<String>>> groupedCollection = mergedPcollection.apply(GroupByKey.<String,String>create());
+    // Group by Key to get a single record for each page
+    PCollection<KV<String, Iterable<String>>> kvReducedPairs = mergedPcollection.apply(GroupByKey.<String, String>create());
 
+    // Convert to a custom Value object (RankedPageKeerthiMuli) in preparation for Job 2
+    PCollection<KV<String, RankedPageKeerthiMuli>> job2in = kvReducedPairs.apply(ParDo.of(new Job1Finalizer()));
     // Transform KV to Strings
-    PCollection<String> mergeString = groupedCollection.apply(
+    PCollection<String> mergeString = job2in.apply(
         MapElements.into(
             TypeDescriptors.strings())
             .via((kvInput) -> kvInput.toString()));
