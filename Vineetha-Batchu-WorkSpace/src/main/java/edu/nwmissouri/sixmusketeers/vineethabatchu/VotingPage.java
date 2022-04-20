@@ -1,6 +1,8 @@
 package edu.nwmissouri.sixmusketeers.vineethabatchu;
 
-public class VotingPage {
+import java.io.Serializable;
+
+public class VotingPage implements Serializable {
 
     public String voterName;
     public Integer contributorVotes;
@@ -24,5 +26,9 @@ public class VotingPage {
 
     public void setContributorVotes(Integer contributorVotes ){
         this.contributorVotes = contributorVotes;
+    }
+    @Override
+    public String toString() {
+        return "VotingPage [contributorVotes=" + contributorVotes + ", voterName=" + voterName + "]";
     }
 }

@@ -130,24 +130,23 @@ public class MinimalPageRankBatchu {
     PCollectionList<KV<String, String>> pCollList = PCollectionList.of(pCollectionKVList1).and(pCollectionKVList2).and(pCollectionKVList3).and(pCollectionKVList4).and(pCollectionKVList5);
     PCollection<KV<String, String>> mergedl = pCollList.apply(Flatten.<KV<String,String>>pCollections());
     // Group by Key to get a single record for each page
-    PCollection<KV<String, Iterable<String>>> grouped =mergedl.apply(GroupByKey.<String, String>create());
+    PCollection<KV<String, Iterable<String>>> grouped =mergedl.apply(GroupByKey.create());
         // Convert to a custom Value object (RankedPage) in preparation for Job 2
-        PCollection<KV<String, RankedPage>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
- 
-    PCollection<String> pColLinkString = job2in.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
-    PCollection<KV<String, RankedPage>> job2out = null; 
-    int iterations = 2;
-    for (int i = 1; i <= iterations; i++) {
-      // use job2in to calculate job2 out
-      // .... write code here
-      // update job2in so it equals the new job2out
-      // ... write code here
-    }
+    PCollection<KV<String, RankedPage>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
     
-    // Map KVs to strings before outputting
-    PCollection<String> output = job2out.apply(MapElements.into(
-        TypeDescriptors.strings())
-        .via(kv -> kv.toString()));
+    PCollection<String> pColLinkString = job2in.apply(
+      MapElements
+      .into(TypeDescriptors.strings())
+      .via((mergeOut)->mergeOut.toString()));
+    // PCollection<KV<String, RankedPage>> job2out = null; 
+    // int iterations = 2;
+    // for (int i = 1; i <= iterations; i++) {
+    //   // use job2in to calculate job2 out
+    //   // .... write code here
+    //   // update job2in so it equals the new job2out
+    //   // ... write code here
+    // }
+    
     pColLinkString.apply(TextIO.write().to("batchuout"));  
     p.run().waitUntilFinish();
     //batchuMapper1(p);
