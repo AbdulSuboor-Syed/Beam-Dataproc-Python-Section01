@@ -4,16 +4,28 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class RankedPage implements Serializable {
-    String name="unkown.md";
-    Double rank=1.0;
-    Integer votes=0;
-    
+    public String key;
+    public ArrayList<VotingPage> voters;
 
     public RankedPage(String key, ArrayList<VotingPage> voters) {
+        this.key = key;
+        this.voters = voters;
     }
 
-    public String toString(){
-        return String.format("%s.$.5f,%d", this.name,this.rank,this.votes);
+    public String getKey(){
+        return key;
+    }
+
+    public  ArrayList<VotingPage> getVoters(){
+        return voters;
+    }
+
+    public void setKey(String key){
+        this.key = key;
+    }
+
+    public  void setVoters(ArrayList<VotingPage> voters){
+        this.voters = voters;
     }
 
 
