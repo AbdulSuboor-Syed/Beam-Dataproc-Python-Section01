@@ -1,9 +1,9 @@
-package edu.nwmissouri.sixmusketeers.keerthimuli;
+package edu.nwmissouri.sixmusketeers;
 
-public class VotingPageKeerthiMuli {
-    public String voterName;
+public class VotingPageVinayPaspula {
+public String voterName;
     public Integer contributorVotes;
-    public VotingPageKeerthiMuli(String voterName, Integer contributorVotes) {
+    public VotingPageVinayPaspula(String voterName, Integer contributorVotes) {
         this.voterName = voterName;
         this.contributorVotes = contributorVotes;
     }
