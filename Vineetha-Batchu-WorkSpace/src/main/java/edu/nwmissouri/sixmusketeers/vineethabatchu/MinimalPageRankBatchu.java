@@ -227,7 +227,7 @@ return updatedOutput;
 public static  void deleteFiles(){
   final File file = new File("./");
   for (File f : file.listFiles()){
-    if(f.getName().startsWith("kandi")){
+    if(f.getName().startsWith("batchu")){
       f.delete();
     }
   }
