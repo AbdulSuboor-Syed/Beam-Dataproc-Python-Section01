@@ -1,22 +1,45 @@
 package edu.nwmissouri.sixmusketeers.keerthimuli;
+import java.io.Serializable;
 
-public class VotingPageKeerthiMuli {
-    public String voterName;
-    public Integer contributorVotes;
-    public VotingPageKeerthiMuli(String voterName, Integer contributorVotes) {
-        this.voterName = voterName;
-        this.contributorVotes = contributorVotes;
+// keep track of a page , its rank and how many votes
+public class VotingPageKeerthiMuli implements Serializable{
+    String name = "unknown.md";
+    Double rank = 1.0;
+    Integer votes = 0;
+
+    /**
+     * 
+     * @param nameIn - name of contributing page
+     * @param votesIn - Count of votes made by contributing page
+     */
+    public VotingPageKeerthiMuli(String nameIn, Integer votesIn) {
+        this.name = nameIn;
+        this.votes = votesIn;
     }
-    public String getVoterName(){
-        return voterName;
+    /**
+     * 
+     * @param nameIn - name of contributing page
+     * @param rankIn - rank of contributor page
+     * @param votesIn - Count of votes made by contributing page
+     */
+    public VotingPageKeerthiMuli(String nameIn,Double rankIn, Integer votesIn) {
+        this.name = nameIn;
+        this.rank = rankIn;
+        this.votes = votesIn;
     }
-    public  Integer getContributorVotes(){
-        return contributorVotes;
+   
+    public String getName(){
+        return this.name;
     }
-    public void setVoterName(String voterName){
-        this.voterName = voterName;
+    public Double getRank(){
+       return  this.rank;
     }
-    public void setContributorVotes(Integer contributorVotes ){
-        this.contributorVotes = contributorVotes;
+    public  Integer getVotes(){
+        return this.votes;
     }
+    @Override
+public String toString(){
+    return ("ContributorPageName = "+ name +", ContributorPageRank = "+this.rank +" CountOfVotes = " + this.votes);
 }
+}   
+
