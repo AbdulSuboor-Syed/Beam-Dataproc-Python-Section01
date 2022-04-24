@@ -21,26 +21,49 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
    |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki)|
 
 3. #### Vineetha Batchu
-   [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vineetha-Batchu-WorkSpace)
 
-   [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vineetha-Batchu)
+   |Page|Links|
+   |---|---|
+   |WorkSpace|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vineetha-Batchu-WorkSpace)|
+   |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vineetha-Batchu)|
+
+   
 
 4. #### Dhanusha Goud Dommati
-      [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Dhanusha-Dommati-WorkSpace) 
 
-      [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Dhanusha-Dommati)
+      |Page|Links|
+      |---|---|
+      |WorkSpace|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Dhanusha-Dommati-WorkSpace)|
+      |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Dhanusha-Dommati)|
+      
+
+      
       
 6. #### Amulya Mallepalli
-      [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Amulya-Mallepalli-WorkSpace)
+
+     |Page|Links|
+     |---|---|
+     |WorkSpace|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Amulya-Mallepalli-WorkSpace)|
+     |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Amulya-Mallepalli)|
       
-      [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Amulya-Mallepalli)
       
-8. #### Keerthi Muli  
-      [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Keerthi-Muli-WorkSpace)
       
-      [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Keerthi-Muli)
+      
+      
+8. #### Keerthi Muli
+
+     |Page|Links|
+     |---|---|
+     |WorkSpace|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Keerthi-Muli-WorkSpace)|
+     |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Keerthi-Muli)| 
+      
+      
   
 7. #### Vinay Kumar Paspula
-      [Link to My WorkSpace](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vinay-Paspula-WorkSpace)
+
+      |Page|Links|
+      |---|---|
+      |WorkSpace|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vinay-Paspula-WorkSpace)|
+      |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vinay-Kumar-Paspula)|
       
-      [Link to My Wiki](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vinay-Kumar-Paspula)
+      
