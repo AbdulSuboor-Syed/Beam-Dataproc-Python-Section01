@@ -57,6 +57,14 @@ public class MinimalPageRankingKeerthiMuli {
 
   
   // HELPER FUNCTIONS
+  public static  void deleteFiles(){
+    final File file = new File("./");
+    for (File f : file.listFiles()){
+     if(f.getName().startsWith("KeerthiMuli_Output")){
+    f.delete();
+    }
+     }
+   }
    // Map to KV pairs
   private static PCollection<KV<String, String>> keerthiMuliMapper1(Pipeline p, String dataFolder, String dataFile) {
 
