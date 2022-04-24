@@ -55,7 +55,36 @@ public class MinimalPageRankingKeerthiMuli {
     }
   }
 
-  
+  // JOB2 MAPPER
+ static class Job2Mapper extends DoFn<KV<String,RankedPageKeerthiMuli >, KV<String, RankedPageKeerthiMuli>> {
+  @ProcessElement
+  public void processElement(@Element KV<String, RankedPageKeerthiMuli> element,
+      OutputReceiver<KV<String, RankedPageKeerthiMuli>> receiver) {
+        // set Integer votes to 0
+    Integer votes = 0;
+      // create ArrayList<VotingPage> named voters and set to element getValue() (a RankedPage) and call getVoters()
+      ArrayList<VotingPageKeerthiMuli> voters =  element.getValue().getVoters();
+      // if voters instanceof Collection then
+      if ( voters instanceof Collection){
+    // set votes to ((Collection<VotingPage>) voters).size()
+    votes =((Collection<VotingPageKeerthiMuli>)voters).size();
+    //end if
+    }
+    // for (VotingPage vp : voters) {
+    for (VotingPageKeerthiMuli vp: voters){
+      String pageName = vp.getName();
+      Double pageRank = vp.getRank();
+      String contributorPageName= element.getKey();
+      Double contributorPageRank= element.getValue().getRank();
+      VotingPageKeerthiMuli contributor = new VotingPageKeerthiMuli(contributorPageName,contributorPageRank,votes);
+      ArrayList<VotingPageKeerthiMuli> arr = new ArrayList<VotingPageKeerthiMuli>();
+      arr.add(contributor);
+      receiver.output(KV.of(vp.getName(), new RankedPageKeerthiMuli(pageName,pageRank,arr)));
+    }
+  }
+ 
+
+  }
   // HELPER FUNCTIONS
   public static  void deleteFiles(){
     final File file = new File("./");
