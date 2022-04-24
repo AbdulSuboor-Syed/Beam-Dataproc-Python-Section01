@@ -94,6 +94,32 @@ public class MinimalPageRankingKeerthiMuli {
     }
      }
    }
+   // JOB2 UPDATER
+ static class Job2Updater extends DoFn<KV<String, Iterable<RankedPageKeerthiMuli>>, KV<String, RankedPageKeerthiMuli>> {
+  @ProcessElement
+  public void processElement(@Element KV<String, Iterable<RankedPageKeerthiMuli>> element,
+    OutputReceiver<KV<String, RankedPageKeerthiMuli>> receiver) {
+      //Double dampingFactor = 0.85
+      Double dampingFactor = 0.85;
+      //Double updatedRank = (1 - dampingFactor) to start
+      Double updatedRank = (1 - dampingFactor);
+      //Create a  new array list for newVoters
+      ArrayList<VotingPageKeerthiMuli> newVoters = new ArrayList<>();
+      //For each pg in rankedPages, if pg isn't null, for each vp in pg.getVoters()
+      for(RankedPageKeerthiMuli pg:element.getValue()){
+        if (pg != null) {
+          for(VotingPageKeerthiMuli vp:pg.getVoters()){
+            newVoters.add(vp);
+            updatedRank += (dampingFactor) * vp.getRank() / (double)vp.getVotes();
+
+          }
+        }
+      }
+      receiver.output(KV.of(element.getKey(),new RankedPageKeerthiMuli(element.getKey(), updatedRank, newVoters)));
+
+  }
+}
+
    // Map to KV pairs
   private static PCollection<KV<String, String>> keerthiMuliMapper1(Pipeline p, String dataFolder, String dataFile) {
 
