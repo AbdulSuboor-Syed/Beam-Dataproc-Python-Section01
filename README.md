@@ -56,12 +56,24 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
       
       
 8. #### Keerthi Muli
+![Photo2](https://user-images.githubusercontent.com/77706824/164998907-e3b1044e-92a4-468f-acb0-4e09c7d56cb5.jpeg)
 
-     |Page|Links|
-     |---|---|
-     |WorkSpace|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Keerthi-Muli-WorkSpace)|
-     |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Keerthi-Muli)| 
-      
+   
+   |Page|Links|
+   |--|--|
+   |Work Space|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Keerthi-Muli-WorkSpace)|
+   |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Keerthi-Muli)|
+   |README|[Link](https://github.com/AbdulSuboor-Syed/Beam-Java-Section02/blob/main/Keerthi-Muli-WorkSpace/README.md)|
+   
+   
+   
+   
+   #### Overiew Of Tasks Completed
+    
+   - Completed Job 1 successfully.
+   -	Completed Job 2 Voting and ranked Pages successfully.
+   -	Completed Job 2 Mapper Successfully.
+   - Compelted Job 2 Updater Successfully
       
   
 7. #### Vinay Kumar Paspula
