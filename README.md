@@ -83,9 +83,17 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
 
 6. #### Vinay Kumar Paspula
 
+![image](https://user-images.githubusercontent.com/26522262/165000978-712ed974-fe0a-4ca1-a802-4e0a9c26d979.png)
+
+
       |Page|Links|
       |---|---|
       |WorkSpace|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vinay-Paspula-WorkSpace)|
       |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vinay-Kumar-Paspula)|
+      
+      #### Status of project
+      
+      - Job 1 Completed.
+      - Working on Job 2 Mapper.
       
       
