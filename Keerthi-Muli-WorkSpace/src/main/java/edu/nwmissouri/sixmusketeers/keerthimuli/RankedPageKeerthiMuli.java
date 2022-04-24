@@ -3,17 +3,17 @@ package edu.nwmissouri.sixmusketeers.keerthimuli;
 import java.util.ArrayList;
 
 public class RankedPageKeerthiMuli {
-    public String key;
+    public String name;
     public ArrayList<VotingPageKeerthiMuli> voters;
-    public RankedPageKeerthiMuli(String key, ArrayList<VotingPageKeerthiMuli> voters) {
-        this.key = key;
-        this.voters = voters;
+    public RankedPageKeerthiMuli(String nameIn, ArrayList<VotingPageKeerthiMuli> votersIn) {
+        this.name = nameIn;
+        this.voters = votersIn;
     }
-    public String getKey(){
-        return key;
+    public String getName(){
+        return name;
     }
-    public void setKey(String key){
-        this.key = key;
+    public void setName(String nameIn){
+        this.name = nameIn;
     }
     public  ArrayList<VotingPageKeerthiMuli> getVoters(){
         return voters;
