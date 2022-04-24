@@ -4,32 +4,36 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class RankedPage implements Serializable {
-    public String key;
+    public String name;
+    public Double rank;
     public ArrayList<VotingPage> voters;
 
-    public RankedPage(String key, ArrayList<VotingPage> voters) {
-        this.key = key;
-        this.voters = voters;
+
+
+    public RankedPage(String nameIn,ArrayList<VotingPage> votersIn) {
+        this.name = nameIn;        
+        this.voters = votersIn;
     }
 
-    public String getKey(){
-        return key;
+
+    public RankedPage(String nameIn,Double rankIn, ArrayList<VotingPage> votersIn) {
+        this.name = nameIn;
+        this.rank=rankIn;
+        this.voters = votersIn;
+    }
+
+    public Double getRank(){
+        return rank;
     }
 
     public  ArrayList<VotingPage> getVoters(){
         return voters;
     }
+    
 
-    public void setKey(String key){
-        this.key = key;
-    }
-
-    public  void setVoters(ArrayList<VotingPage> voters){
-        this.voters = voters;
-    }
     @Override
     public String toString() {
-        return "RankedPage [key=" + key + ", voterList=" + voters + "]";
+        return String.format("%s,%.5f,%s", this.name,this.rank,this.voters.toString());
     }
 
 
