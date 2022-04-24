@@ -33,8 +33,7 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
    |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Vineetha-Batchu)|
 
    
-
-4. #### Dhanusha Goud Dommati
+3. #### Dhanusha Goud Dommati
 
       |Page|Links|
       |---|---|
@@ -44,7 +43,7 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
 
       
       
-6. #### Amulya Mallepalli
+4. #### Amulya Mallepalli
 
      |Page|Links|
      |---|---|
@@ -55,7 +54,7 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
       
       
       
-8. #### Keerthi Muli
+5. #### Keerthi Muli
 ![Photo2](https://user-images.githubusercontent.com/77706824/164998907-e3b1044e-92a4-468f-acb0-4e09c7d56cb5.jpeg)
 
    
@@ -75,8 +74,9 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
    -	Completed Job 2 Mapper Successfully.
    - Compelted Job 2 Updater Successfully
       
-  
-7. #### Vinay Kumar Paspula
+
+
+6. #### Vinay Kumar Paspula
 
       |Page|Links|
       |---|---|
