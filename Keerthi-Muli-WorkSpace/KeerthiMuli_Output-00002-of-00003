@@ -1,0 +1,3 @@
+KV{go.md, ThisPageName = go.md, ThisPageRank = 0.915 ArrayListOfPages = [ContributorPageName = README.md, ContributorPageRank = 2.7 CountOfVotes = 3]}
+KV{README.md, ThisPageName = README.md, ThisPageRank = 1.2550000000000001 ArrayListOfPages = [ContributorPageName = java.md, ContributorPageRank = 0.43333333333333335 CountOfVotes = 1, ContributorPageName = go.md, ContributorPageRank = 0.43333333333333335 CountOfVotes = 1, ContributorPageName = python.md, ContributorPageRank = 0.43333333333333335 CountOfVotes = 1]}
+KV{java.md, ThisPageName = java.md, ThisPageRank = 0.915 ArrayListOfPages = [ContributorPageName = README.md, ContributorPageRank = 2.7 CountOfVotes = 3]}

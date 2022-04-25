@@ -127,7 +127,7 @@ public class MinimalPageRankAbdulSuboor {
 
   static class Job2Updater extends DoFn<KV<String, Iterable<RankedPage>>, KV<String, RankedPage>> {
     @ProcessElement
-    public void processElement(@Element KV<String, Iterable<String>> element,
+    public void processElement(@Element KV<String, Iterable<RankedPage>> element,
         OutputReceiver<KV<String, RankedPage>> receiver) {
       
           String thisPage = element.getKey();
@@ -169,21 +169,18 @@ public class MinimalPageRankAbdulSuboor {
     PCollection<KV<String,String>> pcolKVO3 = AbdulSuboorKVS(p,dataFolder, "README.md");
 
 
-       PCollectionList<KV<String,String>> pcolListing = PCollectionList.of(pcolKVO).and(pcolKVO1).and(pcolKVO2).and(pcolKVO3);
-
-
-       PCollection<KV<String,String>> mergedList = pcolListing.apply(Flatten.<KV<String,String>>pCollections());
-      
+      PCollectionList<KV<String,String>> pcolListing = PCollectionList.of(pcolKVO).and(pcolKVO1).and(pcolKVO2).and(pcolKVO3);
+      PCollection<KV<String,String>> mergedList = pcolListing.apply(Flatten.<KV<String,String>>pCollections());      
       PCollection<KV<String, Iterable<String>>> listReducedPairs =mergedList.apply(GroupByKey.create());
-       PCollection<KV<String, RankedPage>> job02 = listReducedPairs.apply(ParDo.of(new Job1Finalizer()));
+      PCollection<KV<String, RankedPage>> job02 = listReducedPairs.apply(ParDo.of(new Job1Finalizer()));
 
 
        PCollection<KV<String,RankedPage>> job2out = null;
        int iteration =2;
-       for(int i =1;i<=iteration;i++){
-         job2out =// runJob2Iteration(job02);
-         job02=job2out;
-       }
+          for(int i =1;i<=iteration;i++){
+            job2out = runJob2Iteration(job02);// runJob2Iteration(job02);
+            job02=job2out;
+          }
 
        PCollection<String> linkString = job02.apply(
       MapElements
@@ -219,25 +216,39 @@ PCollection<KV<String,String>> pcolKV =  pcolMaping.apply(MapElements.into(
 return pcolKV;
     }
 
+/*
+    * Run one iteration of the Job 2 Map-Reduce process
+   * Notice how the Input Type to Job 2.
+   * Matches the Output Type from Job 2.
+   * How important is that for an iterative process?
+   * 
+   * @param kvReducedPairs - takes a PCollection<KV<String, RankedPage>> with
+   *                       initial ranks.
+   * @return - returns a PCollection<KV<String, RankedPage>> with updated ranks.
+   */
+  private static PCollection<KV<String, RankedPage>> runJob2Iteration(PCollection<KV<String, RankedPage>> kvReducedPairs) 
+  
+  {
+    PCollection<KV<String, RankedPage>> mappedKVs = kvReducedPairs.apply(ParDo.of(new Job2Mapper()));
 
-    /**
- * Run one iteration of the Job 2 Map-Reduce process
- * Notice how the Input Type to Job 2.
- * Matches the Output Type from Job 2.
- * How important is that for an iterative process?
- * 
- * @param kvReducedPairs - takes a PCollection<KV<String, RankedPage>> with
- *                       initial ranks.
- * @return - returns a PCollection<KV<String, RankedPage>> with updated ranks.
- */
-// private static PCollection<KV<String, RankedPage>> runJob2Iteration(
-//   PCollection<KV<String, RankedPage>> kvReducedPairs) {
+    // KV{README.md, README.md, 1.00000, 0, [java.md, 1.00000,1]}
+    // KV{README.md, README.md, 1.00000, 0, [go.md, 1.00000,1]}
+    // KV{java.md, java.md, 1.00000, 0, [README.md, 1.00000,3]}
 
+    PCollection<KV<String, Iterable<RankedPage>>> reducedKVs = mappedKVs
+        .apply(GroupByKey.<String, RankedPage>create());
 
+    // KV{java.md, [java.md, 1.00000, 0, [README.md, 1.00000,3]]}
+    // KV{README.md, [README.md, 1.00000, 0, [python.md, 1.00000,1], README.md,
+    // 1.00000, 0, [java.md, 1.00000,1], README.md, 1.00000, 0, [go.md, 1.00000,1]]}
 
-// PCollection<KV<String,Iterable<RankedPage>>> updatedOutput = null;
-// return updatedOutput;
-// }
+    PCollection<KV<String, RankedPage>> updatedOutput = reducedKVs.apply(ParDo.of(new Job2Updater()));
+
+    // KV{README.md, README.md, 2.70000, 0, [java.md, 1.00000,1, go.md, 1.00000,1,
+    // python.md, 1.00000,1]}
+    // KV{python.md, python.md, 0.43333, 0, [README.md, 1.00000,3]}
+    return updatedOutput;
+  }
 
 
 }
