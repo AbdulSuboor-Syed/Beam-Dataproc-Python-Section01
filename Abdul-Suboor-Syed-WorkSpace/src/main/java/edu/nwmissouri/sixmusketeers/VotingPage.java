@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class VotingPage implements Serializable {
 
-    public String name;
-    public Double rank;
-    public Integer votes;
+    public String name = "unknown.md";
+    public Double rank = 1.0;
+    public Integer votes = 0;
     
 
 

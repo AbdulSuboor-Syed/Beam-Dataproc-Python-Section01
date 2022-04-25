@@ -140,7 +140,7 @@ public class MinimalPageRankAbdulSuboor {
         if (pg!=null) {
           for(VotingPage vp :pg.getVoters()){
             newVoters.add(vp);
-            updateRank +=(dampfactor)*vp.getRank()/(double) vp.getVotes();
+            updateRank +=(dampfactor)*vp.getRank()/(double)vp.getVotes();
           }
         }
       }
@@ -149,75 +149,8 @@ public class MinimalPageRankAbdulSuboor {
   }
 
 
-
-
-
-  public static void main(String[] args) {
-   
-    PipelineOptions options = PipelineOptionsFactory.create();
-
-    Pipeline p = Pipeline.create(options);
-
-    String dataFolder = "web04";
-    
-    
-   
-
-    PCollection<KV<String,String>> pcolKVO = AbdulSuboorKVS(p,dataFolder ,"go.md");
-    PCollection<KV<String,String>> pcolKVO1 = AbdulSuboorKVS(p,dataFolder, "java.md");
-    PCollection<KV<String,String>> pcolKVO2 = AbdulSuboorKVS(p,dataFolder, "python.md");
-    PCollection<KV<String,String>> pcolKVO3 = AbdulSuboorKVS(p,dataFolder, "README.md");
-
-
-      PCollectionList<KV<String,String>> pcolListing = PCollectionList.of(pcolKVO).and(pcolKVO1).and(pcolKVO2).and(pcolKVO3);
-      PCollection<KV<String,String>> mergedList = pcolListing.apply(Flatten.<KV<String,String>>pCollections());      
-      PCollection<KV<String, Iterable<String>>> listReducedPairs =mergedList.apply(GroupByKey.create());
-      PCollection<KV<String, RankedPage>> job02 = listReducedPairs.apply(ParDo.of(new Job1Finalizer()));
-
-
-       PCollection<KV<String,RankedPage>> job2out = null;
-       int iteration =2;
-          for(int i =1;i<=iteration;i++){
-            job2out = runJob2Iteration(job02);// runJob2Iteration(job02);
-            job02=job2out;
-          }
-
-       PCollection<String> linkString = job02.apply(
-      MapElements
-      .into(TypeDescriptors.strings())
-      .via((mergeOut)->mergeOut.toString()));
-      
-    linkString.apply(TextIO.write().to("AbdulSuboor-Job02"));  
-    p.run().waitUntilFinish();
-
-
-
-  }
-
-  private static PCollection<KV<String,String>> AbdulSuboorKVS(Pipeline p, String dataFolder, String dataFile) {
-    
-    String dataPath = dataFolder + "/" + dataFile;
-
-        PCollection<String>pcolInput = p.apply(TextIO.read().from(dataPath));
-                        
-        PCollection<String> pcolLinks = pcolInput.apply(Filter.by( (String line) -> line.startsWith("[") ) );
-
-        PCollection<String> pcolMaping = pcolLinks.apply(MapElements.into( TypeDescriptors.strings()).via(
-                        (String linkline) -> linkline.substring(linkline.indexOf("(")+1,linkline.length()-1) ) );        
-
-
-
-
-PCollection<KV<String,String>> pcolKV =  pcolMaping.apply(MapElements.into(
-  TypeDescriptors
-  .kvs(TypeDescriptors.strings(), TypeDescriptors.strings()))
-    .via((String outLink) -> KV.of(dataFile,outLink)));
-
-return pcolKV;
-    }
-
-/*
-    * Run one iteration of the Job 2 Map-Reduce process
+ /*
+  * Run one iteration of the Job 2 Map-Reduce process
    * Notice how the Input Type to Job 2.
    * Matches the Output Type from Job 2.
    * How important is that for an iterative process?
@@ -249,6 +182,72 @@ return pcolKV;
     // KV{python.md, python.md, 0.43333, 0, [README.md, 1.00000,3]}
     return updatedOutput;
   }
+
+
+
+
+  public static void main(String[] args) {
+   
+    PipelineOptions options = PipelineOptionsFactory.create();
+
+    Pipeline p = Pipeline.create(options);
+
+    String dataFolder = "web04";
+    
+    
+   
+
+    PCollection<KV<String,String>> pcolKVO = AbdulSuboorKVS(p,dataFolder ,"go.md");
+    PCollection<KV<String,String>> pcolKVO1 = AbdulSuboorKVS(p,dataFolder, "java.md");
+    PCollection<KV<String,String>> pcolKVO2 = AbdulSuboorKVS(p,dataFolder, "python.md");
+    PCollection<KV<String,String>> pcolKVO3 = AbdulSuboorKVS(p,dataFolder, "README.md");
+
+
+    PCollectionList<KV<String,String>> pcolListing = PCollectionList.of(pcolKVO).and(pcolKVO1).and(pcolKVO2).and(pcolKVO3);
+    PCollection<KV<String,String>> mergedList = pcolListing.apply(Flatten.<KV<String,String>>pCollections());      
+    PCollection<KV<String, Iterable<String>>> listReducedPairs =mergedList.apply(GroupByKey.create());
+    PCollection<KV<String, RankedPage>> job02 = listReducedPairs.apply(ParDo.of(new Job1Finalizer()));
+
+
+    PCollection<KV<String,RankedPage>> job2out = null;
+       int iteration =50;
+          for(int i =1;i<=iteration;i++){
+            job2out = runJob2Iteration(job02);// runJob2Iteration(job02);
+            job02=job2out;
+          }
+
+    PCollection<String> linkString = job02.apply(
+    MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
+      
+    linkString.apply(TextIO.write().to("AbdulSuboor-Job02"));  
+    p.run().waitUntilFinish();
+
+
+
+  }
+
+  private static PCollection<KV<String,String>> AbdulSuboorKVS(Pipeline p, String dataFolder, String dataFile) {
+    
+    String dataPath = dataFolder + "/" + dataFile;
+
+        PCollection<String>pcolInput = p.apply(TextIO.read().from(dataPath));
+                        
+        PCollection<String> pcolLinks = pcolInput.apply(Filter.by( (String line) -> line.startsWith("[") ) );
+
+        PCollection<String> pcolMaping = pcolLinks.apply(MapElements.into( TypeDescriptors.strings()).via(
+                        (String linkline) -> linkline.substring(linkline.indexOf("(")+1,linkline.length()-1) ) );        
+
+
+
+
+PCollection<KV<String,String>> pcolKV =  pcolMaping.apply(MapElements.into(
+  TypeDescriptors
+  .kvs(TypeDescriptors.strings(), TypeDescriptors.strings()))
+    .via((String outLink) -> KV.of(dataFile,outLink)));
+
+return pcolKV;
+    }
+
 
 
 }

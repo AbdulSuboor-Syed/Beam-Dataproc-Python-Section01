@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class RankedPage implements Serializable {
-    public String name;
-    public Double rank;
+    public String name="unkown.md";
+    public Double rank=1.000;
     public ArrayList<VotingPage> voters;
 
 
