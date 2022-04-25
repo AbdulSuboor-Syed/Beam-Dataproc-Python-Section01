@@ -2,18 +2,18 @@ package edu.nwmissouri.sixmusketeers.vineethabatchu;
 
 import java.io.Serializable;
 
-public class VotingPage implements Serializable {
+public class VotingPageBatchu implements Serializable {
 
     public String name;
     public Integer votes;
     public  Double rank;
 
-    public VotingPage(String voterName, Double pageRank,Integer contributorVotes2){
+    public VotingPageBatchu(String voterName, Double pageRank,Integer contributorVotes2){
         this.name = voterName;
         this.votes = contributorVotes2;      
         this.rank = pageRank;  
     }
-    public VotingPage(String voterName, Integer contributorVotes) {
+    public VotingPageBatchu(String voterName, Integer contributorVotes) {
         this.name = voterName;
         this.votes = contributorVotes;
         this.rank=1.0;

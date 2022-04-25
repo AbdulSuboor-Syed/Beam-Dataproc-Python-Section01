@@ -3,19 +3,19 @@ package edu.nwmissouri.sixmusketeers.vineethabatchu;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RankedPage implements Serializable {
+public class RankedPageBatchu implements Serializable {
     public String name;
-    public ArrayList<VotingPage> voters;
+    public ArrayList<VotingPageBatchu> voters;
     public Double rank;
 
 
-    public RankedPage(String voter,Double rank, ArrayList<VotingPage> voters){
+    public RankedPageBatchu(String voter,Double rank, ArrayList<VotingPageBatchu> voters){
         this.name = voter;
         this.voters = voters;
         this.rank = rank;
     }  
 
-    public RankedPage(String key, ArrayList<VotingPage> voters) {
+    public RankedPageBatchu(String key, ArrayList<VotingPageBatchu> voters) {
         this.name = key;
         this.voters = voters;
         this.rank = 1.0;
@@ -25,7 +25,7 @@ public class RankedPage implements Serializable {
         return name;
     }
 
-    public  ArrayList<VotingPage> getVoters(){
+    public  ArrayList<VotingPageBatchu> getVoters(){
         return voters;
     }
 
@@ -33,7 +33,7 @@ public class RankedPage implements Serializable {
         this.name = key;
     }
 
-    public  void setVoters(ArrayList<VotingPage> voters){
+    public  void setVoters(ArrayList<VotingPageBatchu> voters){
         this.voters = voters;
     }
     @Override

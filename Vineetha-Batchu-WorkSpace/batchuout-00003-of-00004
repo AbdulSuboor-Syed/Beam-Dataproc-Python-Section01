@@ -1,2 +1,1 @@
-KV{java.md, RankedPage [key=java.md, voterList=[VotingPage [contributorVotes=2, voterName=python.md], VotingPage [contributorVotes=2, voterName=README.md]]]}
-KV{README.md, RankedPage [key=README.md, voterList=[VotingPage [contributorVotes=3, voterName=go.md], VotingPage [contributorVotes=3, voterName=java.md], VotingPage [contributorVotes=3, voterName=python.md]]]}
+KV{go.md, go.md,0.99646,[python.md,1.70833,4, README.md,2.27500,4]}

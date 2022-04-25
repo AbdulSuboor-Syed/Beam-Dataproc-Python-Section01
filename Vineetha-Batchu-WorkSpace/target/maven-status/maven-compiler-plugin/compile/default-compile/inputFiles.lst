@@ -2,7 +2,6 @@ C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vinee
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\complete\game\HourlyTeamScore.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\subprocess\kernel\SubProcessKernel.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\common\ExampleUtils.java
-C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\edu\nwmissouri\sixmusketeers\vineethabatchu\RankedPage.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\WordCount.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\subprocess\utils\FileUtils.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\DebuggingWordCount.java
@@ -10,7 +9,6 @@ C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vinee
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\common\ExamplePubsubTopicOptions.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\complete\game\LeaderBoard.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\subprocess\configuration\SubProcessConfiguration.java
-C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\edu\nwmissouri\sixmusketeers\vineethabatchu\VotingPage.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\common\ExamplePubsubTopicAndSubscriptionOptions.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\complete\game\injector\InjectorUtils.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\subprocess\kernel\SubProcessCommandLineArgs.java
@@ -19,6 +17,8 @@ C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vinee
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\subprocess\ExampleEchoPipeline.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\complete\game\injector\RetryHttpInitializerWrapper.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\common\ExampleBigQueryTableOptions.java
+C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\edu\nwmissouri\sixmusketeers\vineethabatchu\VotingPageBatchu.java
+C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\edu\nwmissouri\sixmusketeers\vineethabatchu\RankedPageBatchu.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\complete\game\injector\Injector.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\complete\game\utils\GameConstants.java
 C:\Users\s541991\Documents\44517\Beam-Python-Section02\Beam-Java-Section02\Vineetha-Batchu-WorkSpace\src\main\java\org\apache\beam\examples\complete\game\utils\WriteToBigQuery.java

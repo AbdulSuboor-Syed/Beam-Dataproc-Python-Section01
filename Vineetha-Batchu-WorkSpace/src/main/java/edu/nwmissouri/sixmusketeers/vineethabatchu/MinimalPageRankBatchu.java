@@ -18,6 +18,7 @@
 package edu.nwmissouri.sixmusketeers.vineethabatchu;
 import java.util.Arrays;
 import java.util.Collection;
+import java.io.File;
 import java.util.ArrayList;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
@@ -53,63 +54,69 @@ public class MinimalPageRankBatchu {
    * The output of the Job1 Finalizer creates the initial input into our
    * iterative Job 2.
    */
-  static class Job1Finalizer extends DoFn<KV<String, Iterable<String>>, KV<String, RankedPage>> {
+  static class Job1Finalizer extends DoFn<KV<String, Iterable<String>>, KV<String, RankedPageBatchu>> {
     @ProcessElement
     public void processElement(@Element KV<String, Iterable<String>> element,
-        OutputReceiver<KV<String, RankedPage>> receiver) {
+        OutputReceiver<KV<String, RankedPageBatchu>> receiver) {
       Integer contributorVotes = 0;
       if (element.getValue() instanceof Collection) {
         contributorVotes = ((Collection<String>) element.getValue()).size();
       }
-      ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
+      ArrayList<VotingPageBatchu> voters = new ArrayList<VotingPageBatchu>();
       for (String voterName : element.getValue()) {
         if (!voterName.isEmpty()) {
-          voters.add(new VotingPage(voterName, contributorVotes));
+          voters.add(new VotingPageBatchu(voterName, contributorVotes));
         }
       }
-      receiver.output(KV.of(element.getKey(), new RankedPage(element.getKey(), voters)));
+      receiver.output(KV.of(element.getKey(), new RankedPageBatchu(element.getKey(), voters)));
     }
   }
   
-  static class Job2Mapper extends DoFn<KV<String, RankedPage>, KV<String, RankedPage>> {
+  static class Job2Mapper extends DoFn<KV<String, RankedPageBatchu>, KV<String, RankedPageBatchu>> {
     @ProcessElement
-    public void processElement(@Element KV<String, RankedPage> element,
-        OutputReceiver<KV<String, RankedPage>> receiver) {
+    public void processElement(@Element KV<String, RankedPageBatchu> element,
+        OutputReceiver<KV<String, RankedPageBatchu>> receiver) {
       Integer votes = 0;
-      ArrayList<VotingPage> voters = element.getValue().getVoters();
+      ArrayList<VotingPageBatchu> voters = element.getValue().getVoters();
       if (voters instanceof Collection) {
-        votes = ((Collection<VotingPage>)voters).size();
+        votes = ((Collection<VotingPageBatchu>)voters).size();
       }
-      for (VotingPage vp : voters) {
+      for (VotingPageBatchu vp : voters) {
         String pageName=vp.getName();
         Double pageRank=vp.getRank();
         String contributingPageName= element.getKey();
         Double contributingPageRank=element.getValue().getRank();
-        VotingPage contributer=new VotingPage(contributingPageName, contributingPageRank, votes);
-        ArrayList<VotingPage> arr =new ArrayList<VotingPage>();
+        VotingPageBatchu contributer=new VotingPageBatchu(contributingPageName, contributingPageRank, votes);
+        ArrayList<VotingPageBatchu> arr =new ArrayList<VotingPageBatchu>();
         arr.add(contributer);
-      receiver.output(KV.of(vp.getName(), new RankedPage(pageName,pageRank,arr)));
+      receiver.output(KV.of(vp.getName(), new RankedPageBatchu(pageName,pageRank,arr)));
         
       }
     }
   }
 
-  static class Job2Updater extends DoFn<KV<String, Iterable<RankedPage>>, KV<String, RankedPage>> {
+  static class Job2Updater extends DoFn<KV<String, Iterable<RankedPageBatchu>>, KV<String, RankedPageBatchu>> {
     @ProcessElement
-    public void processElement(@Element KV<String, Iterable<String>> element,
-        OutputReceiver<KV<String, RankedPage>> receiver) {
-      Integer contributorVotes = 0;
-      if (element.getValue() instanceof Collection) {
-        contributorVotes = ((Collection<String>) element.getValue()).size();
-      }
-      ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
-      for (String voterName : element.getValue()) {
-        if (!voterName.isEmpty()) {
-          voters.add(new VotingPage(voterName, contributorVotes));
+  public void processElement(@Element KV<String, Iterable<RankedPageBatchu>> element,
+    OutputReceiver<KV<String, RankedPageBatchu>> receiver) {
+      //Double dampingFactor = 0.85
+      Double dampingFactor = 0.85;
+      //Double updatedRank = (1 - dampingFactor) to start
+      Double updatedRank = (1 - dampingFactor);
+      //Create a  new array list for newVoters
+      ArrayList<VotingPageBatchu> newVoters = new ArrayList<>();
+      //For each pg in rankedPages, if pg isn't null, for each vp in pg.getVoters()
+      for(RankedPageBatchu pg:element.getValue()){
+        if (pg != null) {
+          for(VotingPageBatchu vp:pg.getVoters()){
+            newVoters.add(vp);
+            updatedRank += (dampingFactor) * vp.getRank() / (double)vp.getVotes();
+
+          }
         }
       }
-      receiver.output(KV.of(element.getKey(), new RankedPage(element.getKey(), voters)));
-    }
+      receiver.output(KV.of(element.getKey(),new RankedPageBatchu(element.getKey(), updatedRank, newVoters)));
+  }
   }
 
 
@@ -135,16 +142,23 @@ public class MinimalPageRankBatchu {
     PCollectionList<KV<String, String>> pCollList = PCollectionList.of(pCollectionKVList1).and(pCollectionKVList2).and(pCollectionKVList3).and(pCollectionKVList4).and(pCollectionKVList5);
     PCollection<KV<String, String>> mergedl = pCollList.apply(Flatten.<KV<String,String>>pCollections());
     // Group by Key to get a single record for each page
-    PCollection<KV<String, Iterable<String>>> grouped =mergedl.apply(GroupByKey.create());
+    PCollection<KV<String, Iterable<String>>> grouped =mergedl.apply(GroupByKey.<String,String>create());
         // Convert to a custom Value object (RankedPage) in preparation for Job 2
-    PCollection<KV<String, RankedPage>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
+    PCollection<KV<String, RankedPageBatchu>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
+    
+    PCollection<KV<String, RankedPageBatchu>> job2out = null; 
+    int iterations = 2;
+    for (int i = 1; i <= iterations; i++) {
+      job2out= runJob2Iteration(job2in);
+      job2in =job2out;
+    }
     //job 1 results
     //KV{java.md, RankedPage [key=java.md, voterList=[VotingPage [contributorVotes=2, voterName=python.md], VotingPage [contributorVotes=2, voterName=README.md]]]}
     //KV{README.md, RankedPage [key=README.md, voterList=[VotingPage [contributorVotes=3, voterName=go.md], VotingPage [contributorVotes=3, voterName=java.md], VotingPage [contributorVotes=3, voterName=python.md]]]}
-    PCollection<KV<String,RankedPage>> job2Mapper = job2in.apply(ParDo.of(new Job2Mapper()));
-    PCollection<KV<String, RankedPage>> job2output = null; 
-    PCollection<KV<String,Iterable<RankedPage>>> job2MapperGrp = job2Mapper.apply(GroupByKey.create());
-    job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
+    // PCollection<KV<String,RankedPageBatchu>> job2Mapper = job2in.apply(ParDo.of(new Job2Mapper()));
+    // PCollection<KV<String, RankedPageBatchu>> job2output = null; 
+    // PCollection<KV<String,Iterable<RankedPageBatchu>>> job2MapperGrp = job2Mapper.apply(GroupByKey.create());
+    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
     // job2MapperGrp = job2output.apply(GroupByKey.create());
     // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
    
@@ -153,7 +167,7 @@ public class MinimalPageRankBatchu {
     // job2MapperGrp = job2output.apply(GroupByKey.create());    
     // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));  
     
-    PCollection<String> pColLinkString = job2output.apply(
+    PCollection<String> pColLinkString = job2out.apply(
       MapElements
       .into(TypeDescriptors.strings())
       .via((mergeOut)->mergeOut.toString()));
@@ -216,39 +230,40 @@ public class MinimalPageRankBatchu {
  *                       initial ranks.
  * @return - returns a PCollection<KV<String, RankedPage>> with updated ranks.
  */
-private static PCollection<KV<String, RankedPage>> runJob2Iteration(
-  PCollection<KV<String, RankedPage>> kvReducedPairs) {
+private static PCollection<KV<String, RankedPageBatchu>> runJob2Iteration(
+  PCollection<KV<String, RankedPageBatchu>> kvReducedPairs) {
 
-//    PCollection<KV<String, RankedPage>> mappedKVs = kvReducedPairs.apply(ParDo.of(new Job2Mapper()));
+    PCollection<KV<String, RankedPageBatchu>> mappedKVs = kvReducedPairs.apply(ParDo.of(new Job2Mapper()));
 
 // KV{README.md, README.md, 1.00000, 0, [java.md, 1.00000,1]}
 // KV{README.md, README.md, 1.00000, 0, [go.md, 1.00000,1]}
 // KV{java.md, java.md, 1.00000, 0, [README.md, 1.00000,3]}
 
-// PCollection<KV<String, Iterable<RankedPage>>> reducedKVs = mappedKVs
-//     .apply(GroupByKey.<String, RankedPage>create());
+ PCollection<KV<String, Iterable<RankedPageBatchu>>> reducedKVs = mappedKVs
+     .apply(GroupByKey.<String, RankedPageBatchu>create());
 
 // KV{java.md, [java.md, 1.00000, 0, [README.md, 1.00000,3]]}
 // KV{README.md, [README.md, 1.00000, 0, [python.md, 1.00000,1], README.md,
 // 1.00000, 0, [java.md, 1.00000,1], README.md, 1.00000, 0, [go.md, 1.00000,1]]}
 
-// PCollection<KV<String, RankedPage>> updatedOutput = reducedKVs.apply(ParDo.of(new Job2Updater()));
+ PCollection<KV<String, RankedPageBatchu>> updatedOutput = reducedKVs.apply(ParDo.of(new Job2Updater()));
 
 // KV{README.md, README.md, 2.70000, 0, [java.md, 1.00000,1, go.md, 1.00000,1,
 // python.md, 1.00000,1]}
 // KV{python.md, python.md, 0.43333, 0, [README.md, 1.00000,3]}
 
-PCollection<KV<String, RankedPage>> updatedOutput = null;
+//PCollection<KV<String, RankedPageBatchu>> updatedOutput = null;
 return updatedOutput;
 }
 
-// public static  void deleteFiles(){
-//   final File file = new File("./");
-//   for (File f : file.listFiles()){
-//     if(f.getName().startsWith("batchuout")){
-//       f.delete();
-//     }
-//   }
-// }
+// HELPER FUNCTIONS
+public static  void deleteFiles(){
+  final File file = new File("./");
+  for (File f : file.listFiles()){
+   if(f.getName().startsWith("batchuOut")){
+  f.delete();
+  }
+   }
+ }
 
 }
