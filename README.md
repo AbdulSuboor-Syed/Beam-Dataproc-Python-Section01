@@ -44,6 +44,7 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
       
       
 4. #### Amulya Mallepalli
+![image](Amulya-Mallepalli-WorkSpace/Amulya.jpg)
 
      |Page|Links|
      |---|---|
@@ -61,7 +62,7 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
    |Page|Links|
    |--|--|
    |Work Space|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Keerthi-Muli-WorkSpace)|
-   |Code Folder|[Link](https://github.com/AbdulSuboor-Syed/Beam-Java-Section02/tree/main/Keerthi-Muli-WorkSpace/src/main/java/edu/nwmissouri/sixmusketeers/keerthimuli)|
+   |Code Folder|[Link](https://github.com/AbdulSuboor-Syed/Beam-Java-Section02/tree/main/Keerthi-Muli-       WorkSpace/src/main/java/edu/nwmissouri/sixmusketeers/keerthimuli)|
    |Wiki|[Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/wiki/Keerthi-Muli)|
    |README| [Link](https://github.com/AbdulSuboor-Syed/Beam-Java-Section02/blob/main/Keerthi-Muli-WorkSpace/README.md)|
    |Commits| [Link](https://github.com/AbdulSuboor-Syed/Beam-Java-Section02/commits/main/Keerthi-Muli-WorkSpace)|
@@ -84,9 +85,6 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
 6. #### Vinay Kumar Paspula
 
 ![image](https://user-images.githubusercontent.com/26522262/165000978-712ed974-fe0a-4ca1-a802-4e0a9c26d979.png)
-
-
-
       |Page|Links|
       |--|--|
       |WorkSpace| [Link](https://github.com/AbdulSuboor-Syed/Beam-Python-Section02/tree/main/Vinay-Paspula-WorkSpace)|
