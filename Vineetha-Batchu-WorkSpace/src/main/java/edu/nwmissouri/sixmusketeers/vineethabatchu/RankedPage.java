@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class RankedPage implements Serializable {
     public String name;
     public ArrayList<VotingPage> voters;
-    public double rank;
+    public Double rank;
 
 
-    public RankedPage(String voter,double rank, ArrayList<VotingPage> voters){
+    public RankedPage(String voter,Double rank, ArrayList<VotingPage> voters){
         this.name = voter;
         this.voters = voters;
         this.rank = rank;
@@ -38,7 +38,8 @@ public class RankedPage implements Serializable {
     }
     @Override
     public String toString() {
-        return "RankedPage [name=" + name + ", voterList=" + voters + "rank= "+this.rank+"]";
+        return String.format("%s,%.5f,%s", this.name,this.rank,this.voters.toString());
+       // return "RankedPage [name=" + name + ", voterList=" + voters + "rank= "+this.rank+"]";
     }
     public double getRank() {
         return this.rank;

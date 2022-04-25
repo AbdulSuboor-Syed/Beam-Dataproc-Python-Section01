@@ -73,19 +73,24 @@ public class MinimalPageRankBatchu {
   
   static class Job2Mapper extends DoFn<KV<String, RankedPage>, KV<String, RankedPage>> {
     @ProcessElement
-    public void processElement(@Element KV<String, Iterable<String>> element,
+    public void processElement(@Element KV<String, RankedPage> element,
         OutputReceiver<KV<String, RankedPage>> receiver) {
-      Integer contributorVotes = 0;
-      if (element.getValue() instanceof Collection) {
-        contributorVotes = ((Collection<String>) element.getValue()).size();
+      Integer votes = 0;
+      ArrayList<VotingPage> voters = element.getValue().getVoters();
+      if (voters instanceof Collection) {
+        votes = ((Collection<VotingPage>)voters).size();
       }
-      ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
-      for (String voterName : element.getValue()) {
-        if (!voterName.isEmpty()) {
-          voters.add(new VotingPage(voterName, contributorVotes));
-        }
+      for (VotingPage vp : voters) {
+        String pageName=vp.getName();
+        Double pageRank=vp.getRank();
+        String contributingPageName= element.getKey();
+        Double contributingPageRank=element.getValue().getRank();
+        VotingPage contributer=new VotingPage(contributingPageName, contributingPageRank, votes);
+        ArrayList<VotingPage> arr =new ArrayList<VotingPage>();
+        arr.add(contributer);
+      receiver.output(KV.of(vp.getName(), new RankedPage(pageName,pageRank,arr)));
+        
       }
-      receiver.output(KV.of(element.getKey(), new RankedPage(element.getKey(), voters)));
     }
   }
 
@@ -133,8 +138,22 @@ public class MinimalPageRankBatchu {
     PCollection<KV<String, Iterable<String>>> grouped =mergedl.apply(GroupByKey.create());
         // Convert to a custom Value object (RankedPage) in preparation for Job 2
     PCollection<KV<String, RankedPage>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
+    //job 1 results
+    //KV{java.md, RankedPage [key=java.md, voterList=[VotingPage [contributorVotes=2, voterName=python.md], VotingPage [contributorVotes=2, voterName=README.md]]]}
+    //KV{README.md, RankedPage [key=README.md, voterList=[VotingPage [contributorVotes=3, voterName=go.md], VotingPage [contributorVotes=3, voterName=java.md], VotingPage [contributorVotes=3, voterName=python.md]]]}
+    PCollection<KV<String,RankedPage>> job2Mapper = job2in.apply(ParDo.of(new Job2Mapper()));
+    PCollection<KV<String, RankedPage>> job2output = null; 
+    PCollection<KV<String,Iterable<RankedPage>>> job2MapperGrp = job2Mapper.apply(GroupByKey.create());
+    job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
+    // job2MapperGrp = job2output.apply(GroupByKey.create());
+    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
+   
+
+    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
+    // job2MapperGrp = job2output.apply(GroupByKey.create());    
+    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));  
     
-    PCollection<String> pColLinkString = job2in.apply(
+    PCollection<String> pColLinkString = job2output.apply(
       MapElements
       .into(TypeDescriptors.strings())
       .via((mergeOut)->mergeOut.toString()));
