@@ -126,6 +126,7 @@ public class MinimalPageRankBatchu {
     // options for our pipeline, such as the runner you wish to use. This example
     // will run with the DirectRunner by default, based on the class path configured
     // in its dependencies.
+    deleteFiles();
     PipelineOptions options = PipelineOptionsFactory.create();
 
     Pipeline p = Pipeline.create(options);
@@ -147,44 +148,20 @@ public class MinimalPageRankBatchu {
     PCollection<KV<String, RankedPageBatchu>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
     
     PCollection<KV<String, RankedPageBatchu>> job2out = null; 
-    int iterations = 2;
+    int iterations = 20;
     for (int i = 1; i <= iterations; i++) {
       job2out= runJob2Iteration(job2in);
       job2in =job2out;
     }
-    //job 1 results
-    //KV{java.md, RankedPage [key=java.md, voterList=[VotingPage [contributorVotes=2, voterName=python.md], VotingPage [contributorVotes=2, voterName=README.md]]]}
-    //KV{README.md, RankedPage [key=README.md, voterList=[VotingPage [contributorVotes=3, voterName=go.md], VotingPage [contributorVotes=3, voterName=java.md], VotingPage [contributorVotes=3, voterName=python.md]]]}
-    // PCollection<KV<String,RankedPageBatchu>> job2Mapper = job2in.apply(ParDo.of(new Job2Mapper()));
-    // PCollection<KV<String, RankedPageBatchu>> job2output = null; 
-    // PCollection<KV<String,Iterable<RankedPageBatchu>>> job2MapperGrp = job2Mapper.apply(GroupByKey.create());
-    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
-    // job2MapperGrp = job2output.apply(GroupByKey.create());
-    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
-   
-
-    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));
-    // job2MapperGrp = job2output.apply(GroupByKey.create());    
-    // job2output = job2MapperGrp.apply(ParDo.of(new Job2Updater()));  
     
     PCollection<String> pColLinkString = job2out.apply(
       MapElements
       .into(TypeDescriptors.strings())
       .via((mergeOut)->mergeOut.toString()));
-    // PCollection<KV<String, RankedPage>> job2out = null; 
-    // int iterations = 2;
-    // for (int i = 1; i <= iterations; i++) {
-    //   // use job2in to calculate job2 out
-    //   // .... write code here
-    //   // update job2in so it equals the new job2out
-    //   // ... write code here
-    // }
     
     pColLinkString.apply(TextIO.write().to("batchuout"));  
     p.run().waitUntilFinish();
     //batchuMapper1(p);
-    //pcolLinks.apply(TextIO.write().to("batchuout"));
-
       
         
   }
@@ -260,7 +237,7 @@ return updatedOutput;
 public static  void deleteFiles(){
   final File file = new File("./");
   for (File f : file.listFiles()){
-   if(f.getName().startsWith("batchuOut")){
+   if(f.getName().startsWith("batchuout")){
   f.delete();
   }
    }
