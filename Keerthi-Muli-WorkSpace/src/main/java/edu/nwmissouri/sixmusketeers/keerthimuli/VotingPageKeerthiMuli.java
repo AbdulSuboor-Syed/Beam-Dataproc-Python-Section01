@@ -37,9 +37,14 @@ public class VotingPageKeerthiMuli implements Serializable{
     public  Integer getVotes(){
         return this.votes;
     }
-    @Override
-public String toString(){
-    return ("ContributorPageName = "+ name +", ContributorPageRank = "+this.rank +" CountOfVotes = " + this.votes);
-}
+ //   @Override
+//public String toString(){
+  // return String.format("%s,%.5f,%d", "ContributorPageName = "+ name +", ContributorPageRank = "+this.rank +" CountOfVotes = " + this.votes);
+//}
+@Override
+    public String toString(){
+        return String.format("%s,%.5f,%d", this.name,this.rank,this.votes);
+    }
+
 }   
 
