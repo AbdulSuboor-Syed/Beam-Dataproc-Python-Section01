@@ -202,7 +202,7 @@ public class MinimalPageRankingKeerthiMuli {
     PCollection<KV<String, RankedPageKeerthiMuli>> job2in = kvReducedPairs.apply(ParDo.of(new Job1Finalizer()));
 
     PCollection<KV<String, RankedPageKeerthiMuli>> job2out = null; 
-    int iterations = 2;
+    int iterations = 50;
     for (int i = 1; i <= iterations; i++) {
       job2out= runJob2Iteration(job2in);
       job2in =job2out;
