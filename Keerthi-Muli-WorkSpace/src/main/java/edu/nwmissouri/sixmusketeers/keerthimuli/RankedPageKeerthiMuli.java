@@ -43,11 +43,14 @@ public class RankedPageKeerthiMuli implements Serializable{
     public  void setVoters(ArrayList<VotingPageKeerthiMuli> voters){
         this.voters = voters;
     }
+//@Override
+//public String toString(){
+ //  return String.format("%s,%.5f,%s", "ThisPageName = "+this.name +", ThisPageRank = "+this.rank +" ArrayListOfPages = " + this.voters.toString());
+
+//}
 @Override
-public String toString(){
-    return ("ThisPageName = "+ name +", ThisPageRank = "+this.rank +" ArrayListOfPages = " + this.voters);
+    public String toString() {
+        return String.format("%s,%.5f,%s", this.name,this.rank,this.voters.toString());
+    }
 
-}
-
- 
 }
