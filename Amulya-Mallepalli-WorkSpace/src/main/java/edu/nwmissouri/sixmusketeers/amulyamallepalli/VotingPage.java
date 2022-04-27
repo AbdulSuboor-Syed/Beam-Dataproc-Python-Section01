@@ -2,16 +2,47 @@ package edu.nwmissouri.sixmusketeers.amulyamallepalli;
 
 import java.io.Serializable;
 
-public class VotingPage implements Serializable{
-    String voterName;
-    Integer contributorVotes;
+public class VotingPage implements Serializable {
+
+    public String name;
+    public Integer votes;
+    public  Double rank;
+
+    public VotingPage(String voterName, Double pageRank,Integer contributorVotes2){
+        this.name = voterName;
+        this.votes = contributorVotes2;      
+        this.rank = pageRank;  
+    }
     public VotingPage(String voterName, Integer contributorVotes) {
-        this.voterName = voterName;
-        this.contributorVotes = contributorVotes;
+        this.name = voterName;
+        this.votes = contributorVotes;
+        this.rank=1.0;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public  Integer getVotes(){
+        return votes;
+    }
+
+    public void setName(String voterName){
+        this.name = voterName;
+    }
+
+    public void setVotes(Integer contributorVotes ){
+        this.votes = contributorVotes;
     }
     @Override
     public String toString() {
-        return "VotingPage [contributorVotes=" + contributorVotes + ", voterName=" + voterName + "]";
+        return String.format("%s,%.5f,%s", this.name,this.rank,this.votes.toString());
+      //  return "VotingPage [contributorVotes=" + contributorVotes + ", voterName=" + voterName + "]";
     }
-
+    public double getRank() {
+        return this.rank;
+    }
+    public void setRank(double pageRank){
+        this.rank = pageRank;
+    }
 }

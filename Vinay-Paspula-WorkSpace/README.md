@@ -13,7 +13,7 @@ Java Quickstart for Apache Beam
 
 ## Execute PR
 ```PowerShell
-mvn compile exec:java -D exec.mainClass=edu.nwmissouri.sixmusketeers.vineethabatchu.MinimalPageRankVinayPaspula
+mvn compile exec:java -D exec.mainClass=edu.nwmissouri.sixmusketeers.vinaypaspula.MinimalPageRankVinayPaspula
 ```
 
 ### Group-Repo Launch page

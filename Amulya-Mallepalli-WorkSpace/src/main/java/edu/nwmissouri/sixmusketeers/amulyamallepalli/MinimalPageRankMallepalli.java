@@ -74,39 +74,50 @@ public class MinimalPageRankMallepalli {
   
   static class Job2Mapper extends DoFn<KV<String, RankedPage>, KV<String, RankedPage>> {
     @ProcessElement
-    public void processElement(@Element KV<String, Iterable<String>> element,
+    public void processElement(@Element KV<String, RankedPage> element,
         OutputReceiver<KV<String, RankedPage>> receiver) {
-      Integer contributorVotes = 0;
-      if (element.getValue() instanceof Collection) {
-        contributorVotes = ((Collection<String>) element.getValue()).size();
+      Integer votes = 0;
+      ArrayList<VotingPage> voters = element.getValue().getVoters();
+      if (voters instanceof Collection) {
+        votes = ((Collection<VotingPage>)voters).size();
       }
-      ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
-      for (String voterName : element.getValue()) {
-        if (!voterName.isEmpty()) {
-          voters.add(new VotingPage(voterName, contributorVotes));
-        }
+      for (VotingPage vp : voters) {
+        String pageName=vp.getName();
+        Double pageRank=vp.getRank();
+        String contributingPageName= element.getKey();
+        Double contributingPageRank=element.getValue().getRank();
+        VotingPage contributer=new VotingPage(contributingPageName, contributingPageRank, votes);
+        ArrayList<VotingPage> arr =new ArrayList<VotingPage>();
+        arr.add(contributer);
+      receiver.output(KV.of(vp.getName(), new RankedPage(pageName,pageRank,arr)));
+        
       }
-      receiver.output(KV.of(element.getKey(), new RankedPage(element.getKey(), voters)));
     }
   }
 
   static class Job2Updater extends DoFn<KV<String, Iterable<RankedPage>>, KV<String, RankedPage>> {
     @ProcessElement
-    public void processElement(@Element KV<String, Iterable<String>> element,
-        OutputReceiver<KV<String, RankedPage>> receiver) {
-      Integer contributorVotes = 0;
-      if (element.getValue() instanceof Collection) {
-        contributorVotes = ((Collection<String>) element.getValue()).size();
-      }
-      ArrayList<VotingPage> voters = new ArrayList<VotingPage>();
-      for (String voterName : element.getValue()) {
-        if (!voterName.isEmpty()) {
-          voters.add(new VotingPage(voterName, contributorVotes));
+    public void processElement(@Element KV<String, Iterable<RankedPage>> element,
+    OutputReceiver<KV<String, RankedPage>> receiver) {
+      //Double dampingFactor = 0.85
+      Double dampingFactor = 0.85;
+      //Double updatedRank = (1 - dampingFactor) to start
+      Double updatedRank = (1 - dampingFactor);
+      //Create a  new array list for newVoters
+      ArrayList<VotingPage> newVoters = new ArrayList<>();
+      //For each pg in rankedPages, if pg isn't null, for each vp in pg.getVoters()
+      for(RankedPage pg:element.getValue()){
+        if (pg != null) {
+          for(VotingPage vp:pg.getVoters()){
+            newVoters.add(vp);
+            updatedRank += (dampingFactor) * vp.getRank() / (double)vp.getVotes();
+
+          }
         }
       }
-      receiver.output(KV.of(element.getKey(), new RankedPage(element.getKey(), voters)));
-    } }
-  
+      receiver.output(KV.of(element.getKey(),new RankedPage(element.getKey(), updatedRank, newVoters)));
+  }
+  }
   public static void main(String[] args) {
 
     PipelineOptions options = PipelineOptionsFactory.create();
