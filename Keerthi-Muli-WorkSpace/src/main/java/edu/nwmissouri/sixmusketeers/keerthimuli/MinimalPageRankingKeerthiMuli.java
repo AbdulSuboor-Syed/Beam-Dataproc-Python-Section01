@@ -3,20 +3,25 @@ package edu.nwmissouri.sixmusketeers.keerthimuli;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+
+
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Combine;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.Filter;
 import org.apache.beam.sdk.transforms.Flatten;
 import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.MapElements;
+import org.apache.beam.sdk.transforms.Max;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionList;
 import org.apache.beam.sdk.values.TypeDescriptors;
+
 
 public class MinimalPageRankingKeerthiMuli {
  // DEFINE DOFNS
@@ -36,6 +41,7 @@ public class MinimalPageRankingKeerthiMuli {
    * The output of the Job1 Finalizer creates the initial input into our
    * iterative Job 2.
    */
+
   // JOB1 FINALIZER
   static class Job1Finalizer extends DoFn<KV<String, Iterable<String>>, KV<String, RankedPageKeerthiMuli>> {
     @ProcessElement
@@ -109,14 +115,24 @@ static class Job2Updater extends DoFn<KV<String, Iterable<RankedPageKeerthiMuli>
     receiver.output(KV.of(thisPage, new RankedPageKeerthiMuli(thisPage,updateRank,newVoters)));
   }
 }
+
+// JOB3 FINALIZER
+static class Job3Finalizer extends DoFn<KV<String, RankedPageKeerthiMuli>, KV<Double, String>> {
+  @ProcessElement
+  public void processElement(@Element KV<String, RankedPageKeerthiMuli> element,
+      OutputReceiver<KV<Double, String>> receiver) {
+    receiver.output(KV.of(element.getValue().getRank(), element.getKey()));
+  }
+}
+
 // HELPER FUNCTIONS
 public static  void deleteFiles(){
   final File file = new File("./");
   for (File f : file.listFiles()){
-   if(f.getName().startsWith("KeerthiMuli_Output")){
+   if(f.getName().startsWith("KeerthiMuli_FinalJob3Output")){
   f.delete();
   }
-   }
+  }
  }
    // Map to KV pairs
   private static PCollection<KV<String, String>> keerthiMuliMapper1(Pipeline p, String dataFolder, String dataFile) {
@@ -165,7 +181,6 @@ public static  void deleteFiles(){
     // 1.00000, 0, [java.md, 1.00000,1], README.md, 1.00000, 0, [go.md, 1.00000,1]]}
 
     PCollection<KV<String, RankedPageKeerthiMuli>> updatedOutput = reducedKVs.apply(ParDo.of(new Job2Updater()));
-
     // KV{README.md, README.md, 2.70000, 0, [java.md, 1.00000,1, go.md, 1.00000,1,
     // python.md, 1.00000,1]}
     // KV{python.md, python.md, 0.43333, 0, [README.md, 1.00000,3]}
@@ -205,18 +220,21 @@ public static  void deleteFiles(){
       job2out= runJob2Iteration(job2in);
       job2in =job2out;
     }
-  
+    
+    PCollection<KV<Double, String>> job3out = job2out.apply(ParDo.of(new Job3Finalizer()));
+
+   PCollection<KV<Double, String>> maxFinalPageRank = job3out.apply(Combine.globally(Max.of(new RankedPageKeerthiMuli())));
     // Transform KV to Strings
-   PCollection<String> mergeString = job2out.apply(
+  PCollection<String> mergeString = maxFinalPageRank.apply(
         MapElements.into(
             TypeDescriptors.strings())
             .via((kvInput) -> kvInput.toString()));
-    mergeString.apply(TextIO.write().to("KeerthiMuli_Output"));
+    mergeString.apply(TextIO.write().to("KeerthiMuli_FinalJob3Output"));
 
     p.run().waitUntilFinish();
+  
   }
-
-  }
+}
 
 
 

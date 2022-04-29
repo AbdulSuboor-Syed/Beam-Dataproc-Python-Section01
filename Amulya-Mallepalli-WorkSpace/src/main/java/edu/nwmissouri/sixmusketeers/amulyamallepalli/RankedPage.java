@@ -3,7 +3,12 @@ package edu.nwmissouri.sixmusketeers.amulyamallepalli;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RankedPage implements Serializable {
+import org.apache.beam.sdk.values.KV;
+
+import java.util.*;
+
+public class RankedPage implements Serializable, Comparator<KV<Double,String>> 
+{
     public String name;
     public ArrayList<VotingPage> voters;
     public Double rank;
@@ -20,7 +25,10 @@ public class RankedPage implements Serializable {
         this.voters = voters;
         this.rank = 1.0;
     }
-
+    public RankedPage() {
+        name = "";
+        rank = 0.0;
+    }
     public String getKey(){
         return name;
     }
@@ -44,6 +52,17 @@ public class RankedPage implements Serializable {
     public double getRank() {
         return this.rank;
     }
+    @Override
+    public int compare(KV<Double, String> o1, KV<Double, String> o2) {
+        double rank1 = o1.getKey();
+        double rank2 = o2.getKey();
+        if (rank1 > rank2) {
+            return 1;
+        } else if(rank1 < rank2) {
+            return -1;
+        }else{
+            return 0;
+        }
 
-
+}
 }

@@ -17,39 +17,29 @@
  */
 package edu.nwmissouri.sixmusketeers.amulyamallepalli;
 
-import java.io.File;
-import java.util.ArrayList;
-
-// beam-playground:
-//   name: MinimalWordCount
-//   description: An example that counts words in Shakespeare's works.
-//   multifile: false
-//   pipeline_options:
-//   categories:
-//     - Combiners
-//     - Filtering
-//     - IO
-//     - Core Transforms
-
 import java.util.Arrays;
 import java.util.Collection;
-
+import java.util.Comparator;
+import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Combine;
 import org.apache.beam.sdk.transforms.Count;
-import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.Filter;
+import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.Flatten;
-import org.apache.beam.sdk.transforms.GroupByKey;
-import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.MapElements;
+import org.apache.beam.sdk.transforms.Max;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionList;
-import org.apache.beam.sdk.values.TypeDescriptor;
 import org.apache.beam.sdk.values.TypeDescriptors;
 
 public class MinimalPageRankMallepalli {
@@ -95,6 +85,7 @@ public class MinimalPageRankMallepalli {
     }
   }
 
+ 
   static class Job2Updater extends DoFn<KV<String, Iterable<RankedPage>>, KV<String, RankedPage>> {
     @ProcessElement
     public void processElement(@Element KV<String, Iterable<RankedPage>> element,
@@ -118,8 +109,15 @@ public class MinimalPageRankMallepalli {
       receiver.output(KV.of(element.getKey(),new RankedPage(element.getKey(), updatedRank, newVoters)));
   }
   }
+  static class Job3 extends DoFn<KV<String, RankedPage>, KV<Double, String>> {
+    @ProcessElement
+    public void processElement(@Element KV<String, RankedPage > element,
+        OutputReceiver<KV<Double, String>> receiver) {
+      receiver.output(KV.of(element.getValue().getRank(), element.getKey()));
+    }
+  }
   public static void main(String[] args) {
-
+    deleteFiles();
     PipelineOptions options = PipelineOptionsFactory.create();
     Pipeline p = Pipeline.create(options);
     String dataFolder = "web04";
@@ -136,8 +134,17 @@ public class MinimalPageRankMallepalli {
     PCollection<KV<String, Iterable<String>>> pcolGroupByKey = mergedList.apply(GroupByKey.create());
 
     PCollection<KV<String, RankedPage>> jobTwoInput = pcolGroupByKey.apply(ParDo.of(new Job1Finalizer()));
+    PCollection<KV<String, RankedPage>> job2out = null; 
 
-    PCollection<String> pLinksStr = jobTwoInput.apply(
+    int iterations = 50;
+    for (int i = 1; i <= iterations; i++) {
+      job2out= runJob2Iteration(jobTwoInput);
+      jobTwoInput =job2out;
+    }
+    PCollection<KV<Double, String>> jobThree = job2out.apply(ParDo.of(new Job3()));
+
+    PCollection<KV<Double, String>> maxFinalRank = jobThree.apply(Combine.globally(Max.of(new RankedPage())));
+    PCollection<String> pLinksStr = maxFinalRank.apply(
         MapElements.into(
             TypeDescriptors.strings())
             .via((mergeOut) -> mergeOut.toString()));
@@ -176,26 +183,26 @@ public class MinimalPageRankMallepalli {
 private static PCollection<KV<String, RankedPage>> runJob2Iteration(
   PCollection<KV<String, RankedPage>> kvReducedPairs) {
 
-//    PCollection<KV<String, RankedPage>> mappedKVs = kvReducedPairs.apply(ParDo.of(new Job2Mapper()));
+PCollection<KV<String, RankedPage>> mappedKVs = kvReducedPairs.apply(ParDo.of(new Job2Mapper()));
 
 // KV{README.md, README.md, 1.00000, 0, [java.md, 1.00000,1]}
 // KV{README.md, README.md, 1.00000, 0, [go.md, 1.00000,1]}
 // KV{java.md, java.md, 1.00000, 0, [README.md, 1.00000,3]}
 
-// PCollection<KV<String, Iterable<RankedPage>>> reducedKVs = mappedKVs
-//     .apply(GroupByKey.<String, RankedPage>create());
+PCollection<KV<String, Iterable<RankedPage>>> reducedKVs = mappedKVs
+   .apply(GroupByKey.<String, RankedPage>create());
 
 // KV{java.md, [java.md, 1.00000, 0, [README.md, 1.00000,3]]}
 // KV{README.md, [README.md, 1.00000, 0, [python.md, 1.00000,1], README.md,
 // 1.00000, 0, [java.md, 1.00000,1], README.md, 1.00000, 0, [go.md, 1.00000,1]]}
 
-// PCollection<KV<String, RankedPage>> updatedOutput = reducedKVs.apply(ParDo.of(new Job2Updater()));
+PCollection<KV<String, RankedPage>> updatedOutput = reducedKVs.apply(ParDo.of(new Job2Updater()));
 
 // KV{README.md, README.md, 2.70000, 0, [java.md, 1.00000,1, go.md, 1.00000,1,
 // python.md, 1.00000,1]}
 // KV{python.md, python.md, 0.43333, 0, [README.md, 1.00000,3]}
 
-PCollection<KV<String, RankedPage>> updatedOutput = null;
+//PCollection<KV<String, RankedPage>> updatedOutput = null;
 return updatedOutput;
 }
 
