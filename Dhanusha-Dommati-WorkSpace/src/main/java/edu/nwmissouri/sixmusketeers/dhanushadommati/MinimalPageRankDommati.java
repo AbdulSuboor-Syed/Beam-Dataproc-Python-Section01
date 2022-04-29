@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.CollectionCoder;
 import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.transforms.Combine;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Count;
@@ -35,6 +36,7 @@ import org.apache.beam.sdk.transforms.Filter;
 import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.Flatten;
 import org.apache.beam.sdk.transforms.MapElements;
+import org.apache.beam.sdk.transforms.Max;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
@@ -106,6 +108,13 @@ public class MinimalPageRankDommati {
       receiver.output(KV.of(element.getKey(),new RankedPage(element.getKey(), updatedRank, newVoters)));
   }
   }
+  static class Job3 extends DoFn<KV<String, RankedPage>, KV<Double, String>> {
+    @ProcessElement
+    public void processElement(@Element KV<String, RankedPage> element,
+        OutputReceiver<KV<Double, String>> receiver) {
+      receiver.output(KV.of(element.getValue().getRank(), element.getKey()));
+    }
+  }
   public static void main(String[] args) {
 
     // Create a PipelineOptions object. This object lets us set various execution
@@ -141,8 +150,11 @@ public class MinimalPageRankDommati {
       job2in =job2out;
      }
 
+    PCollection<KV<Double, String>> jobThree = job2out.apply(ParDo.of(new Job3()));
 
-    PCollection<String> pColLinkString = job2out.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
+    PCollection<KV<Double, String>> maxFinalRank = jobThree.apply(Combine.globally(Max.of(new RankedPage())));
+
+    PCollection<String> pColLinkString = maxFinalRank.apply(MapElements.into(TypeDescriptors.strings()).via((mergeOut)->mergeOut.toString()));
     pColLinkString.apply(TextIO.write().to("dhanuuout"));  
     p.run().waitUntilFinish();
     
