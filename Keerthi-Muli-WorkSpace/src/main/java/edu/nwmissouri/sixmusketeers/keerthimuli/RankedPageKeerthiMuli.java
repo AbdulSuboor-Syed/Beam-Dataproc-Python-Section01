@@ -2,11 +2,18 @@ package edu.nwmissouri.sixmusketeers.keerthimuli;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
+
+import org.apache.beam.sdk.values.KV;
 // Keeps track of a page , its rank and its voting pages.
-public class RankedPageKeerthiMuli implements Serializable{
+public class RankedPageKeerthiMuli implements Serializable, Comparator<KV<Double,String>> {
     String name = "unknown.md";
     Double rank =1.000;
     ArrayList<VotingPageKeerthiMuli> voters = new ArrayList<VotingPageKeerthiMuli>();
+
+    public RankedPageKeerthiMuli() {
+    
+    }
     /**
      * 
      * @param nameIn this page name
@@ -52,5 +59,16 @@ public class RankedPageKeerthiMuli implements Serializable{
     public String toString() {
         return String.format("%s,%.5f,%s", this.name,this.rank,this.voters.toString());
     }
-
+    @Override
+    public int compare(KV<Double, String> r1, KV<Double, String> r2) {
+        double rank1 = r1.getKey();
+        double rank2 = r2.getKey();
+        if (rank1 > rank2) {
+            return 1;
+        } else if(rank1 < rank2) {
+            return -1;
+        }else{
+            return 0;
+        }
+    }
 }
