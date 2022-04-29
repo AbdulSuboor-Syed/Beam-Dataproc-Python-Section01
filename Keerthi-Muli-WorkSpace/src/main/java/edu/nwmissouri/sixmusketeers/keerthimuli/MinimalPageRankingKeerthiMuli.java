@@ -30,7 +30,7 @@ public class MinimalPageRankingKeerthiMuli {
 
   /**
    * DoFn Job1Finalizer takes KV(String, String List of outlinks) and transforms
-   * the value into our custom RankedPage Value holding the page's rank and list
+   * the value into our custom RankedPageKeerthiMuli Value holding the page's rank and list
    * of voters.
    * 
    * The output of the Job1 Finalizer creates the initial input into our
@@ -85,41 +85,39 @@ public class MinimalPageRankingKeerthiMuli {
  
 
   }
-  // HELPER FUNCTIONS
-  public static  void deleteFiles(){
-    final File file = new File("./");
-    for (File f : file.listFiles()){
-     if(f.getName().startsWith("KeerthiMuli_Output")){
-    f.delete();
-    }
-     }
-   }
+  
    // JOB2 UPDATER
- static class Job2Updater extends DoFn<KV<String, Iterable<RankedPageKeerthiMuli>>, KV<String, RankedPageKeerthiMuli>> {
+static class Job2Updater extends DoFn<KV<String, Iterable<RankedPageKeerthiMuli>>, KV<String, RankedPageKeerthiMuli>> {
   @ProcessElement
   public void processElement(@Element KV<String, Iterable<RankedPageKeerthiMuli>> element,
-    OutputReceiver<KV<String, RankedPageKeerthiMuli>> receiver) {
-      //Double dampingFactor = 0.85
-      Double dampingFactor = 0.85;
-      //Double updatedRank = (1 - dampingFactor) to start
-      Double updatedRank = (1 - dampingFactor);
-      //Create a  new array list for newVoters
-      ArrayList<VotingPageKeerthiMuli> newVoters = new ArrayList<>();
-      //For each pg in rankedPages, if pg isn't null, for each vp in pg.getVoters()
-      for(RankedPageKeerthiMuli pg:element.getValue()){
-        if (pg != null) {
-          for(VotingPageKeerthiMuli vp:pg.getVoters()){
-            newVoters.add(vp);
-            updatedRank += (dampingFactor) * vp.getRank() / (double)vp.getVotes();
+      OutputReceiver<KV<String, RankedPageKeerthiMuli>> receiver) {
+    
+        String thisPage = element.getKey();
+        Iterable<RankedPageKeerthiMuli> rankedPages = element.getValue();
+        Double dampfactor = 0.85;
+        Double updateRank = (1.0 -dampfactor);
+        ArrayList<VotingPageKeerthiMuli> newVoters = new ArrayList<VotingPageKeerthiMuli>();
 
-          }
+      for (RankedPageKeerthiMuli pg:rankedPages) {
+      if (pg!=null) {
+        for(VotingPageKeerthiMuli vp :pg.getVoters()){
+          newVoters.add(vp);
+          updateRank +=(dampfactor)*vp.getRank()/(double)vp.getVotes();
         }
       }
-      receiver.output(KV.of(element.getKey(),new RankedPageKeerthiMuli(element.getKey(), updatedRank, newVoters)));
-
+    }
+    receiver.output(KV.of(thisPage, new RankedPageKeerthiMuli(thisPage,updateRank,newVoters)));
   }
 }
-
+// HELPER FUNCTIONS
+public static  void deleteFiles(){
+  final File file = new File("./");
+  for (File f : file.listFiles()){
+   if(f.getName().startsWith("KeerthiMuli_Output")){
+  f.delete();
+  }
+   }
+ }
    // Map to KV pairs
   private static PCollection<KV<String, String>> keerthiMuliMapper1(Pipeline p, String dataFolder, String dataFile) {
 
@@ -146,9 +144,9 @@ public class MinimalPageRankingKeerthiMuli {
    * Matches the Output Type from Job 2.
    * How important is that for an iterative process?
    * 
-   * @param kvReducedPairs - takes a PCollection<KV<String, RankedPage>> with
+   * @param kvReducedPairs - takes a PCollection<KV<String, RankedPageKeerthiMuli>> with
    *                       initial ranks.
-   * @return - returns a PCollection<KV<String, RankedPage>> with updated ranks.
+   * @return - returns a PCollection<KV<String, RankedPageKeerthiMuli>> with updated ranks.
    */
  private static PCollection<KV<String, RankedPageKeerthiMuli>> runJob2Iteration(
       PCollection<KV<String, RankedPageKeerthiMuli>> kvReducedPairs) {
@@ -202,11 +200,12 @@ public class MinimalPageRankingKeerthiMuli {
     PCollection<KV<String, RankedPageKeerthiMuli>> job2in = kvReducedPairs.apply(ParDo.of(new Job1Finalizer()));
 
     PCollection<KV<String, RankedPageKeerthiMuli>> job2out = null; 
-    int iterations = 2;
+    int iterations = 50;
     for (int i = 1; i <= iterations; i++) {
       job2out= runJob2Iteration(job2in);
       job2in =job2out;
     }
+  
     // Transform KV to Strings
    PCollection<String> mergeString = job2out.apply(
         MapElements.into(
