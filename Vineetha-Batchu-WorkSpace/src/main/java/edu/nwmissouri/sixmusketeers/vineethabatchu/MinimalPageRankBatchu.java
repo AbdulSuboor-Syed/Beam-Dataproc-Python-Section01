@@ -166,7 +166,7 @@ public class MinimalPageRankBatchu {
     PCollection<KV<String, RankedPageBatchu>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
     
     PCollection<KV<String, RankedPageBatchu>> job2out = null; 
-    int iterations = 20;
+    int iterations = 50;
     for (int i = 1; i <= iterations; i++) {
       job2out= runJob2Iteration(job2in);
       job2in =job2out;
