@@ -2,8 +2,11 @@ package edu.nwmissouri.sixmusketeers.vineethabatchu;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class RankedPageBatchu implements Serializable {
+import org.apache.beam.sdk.values.KV;
+
+public class RankedPageBatchu implements Serializable, Comparator<KV<Double,String>> {
     public String name;
     public ArrayList<VotingPageBatchu> voters;
     public Double rank;
@@ -14,7 +17,10 @@ public class RankedPageBatchu implements Serializable {
         this.voters = voters;
         this.rank = rank;
     }  
-
+    public RankedPageBatchu() {
+        name = "";
+        rank = 0.0;
+    }
     public RankedPageBatchu(String key, ArrayList<VotingPageBatchu> voters) {
         this.name = key;
         this.voters = voters;
@@ -43,6 +49,18 @@ public class RankedPageBatchu implements Serializable {
     }
     public double getRank() {
         return this.rank;
+    }
+    @Override
+    public int compare(KV<Double, String> o1, KV<Double, String> o2) {
+        double rank1 = o1.getKey();
+        double rank2 = o2.getKey();
+        if (rank1 > rank2) {
+            return 1;
+        } else if(rank1 < rank2) {
+            return -1;
+        }else{
+            return 0;
+        }
     }
 
 
