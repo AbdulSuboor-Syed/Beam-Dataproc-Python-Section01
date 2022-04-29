@@ -18,3 +18,19 @@ mvn archetype:generate `
 ### Command Used For Executing Project In Poweshell
 
  mvn compile exec:java -D exec.mainClass=edu.nwmissouri.sixmusketeers.keerthimuli.MinimalPageRankingKeerthiMuli
+ 
+### Link to My Code Folder
+https://github.com/AbdulSuboor-Syed/Beam-Java-Section02/tree/main/Keerthi-Muli-WorkSpace/src/main/java/edu/nwmissouri/sixmusketeers/keerthimuli
+
+
+### Link to My Wiki:
+https://github.com/AbdulSuboor-Syed/Beam-Java-Section02/wiki/Keerthi-Muli
+
+
+### Overview Of Tasks Completed:
+   - Completed Job 1 successfully.
+   -	Completed Job 2 Voting and ranked Pages successfully.
+   -	Completed Job 2 Mapper Successfully.
+   - Completed Job 2 Updater Successfully.
+   - Completed Job 3 Successfully.
+
