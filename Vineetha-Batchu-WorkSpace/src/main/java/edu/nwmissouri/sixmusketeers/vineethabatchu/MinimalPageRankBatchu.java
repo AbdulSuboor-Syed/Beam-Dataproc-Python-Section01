@@ -18,12 +18,15 @@
 package edu.nwmissouri.sixmusketeers.vineethabatchu;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Combine;
 import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.Filter;
@@ -32,6 +35,7 @@ import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.Flatten;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.MapElements;
+import org.apache.beam.sdk.transforms.Max;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionList;
@@ -118,7 +122,14 @@ public class MinimalPageRankBatchu {
       receiver.output(KV.of(element.getKey(),new RankedPageBatchu(element.getKey(), updatedRank, newVoters)));
   }
   }
-
+ 
+  static class Job3 extends DoFn<KV<String, RankedPageBatchu>, KV<Double, String>> {
+    @ProcessElement
+    public void processElement(@Element KV<String, RankedPageBatchu> element,
+        OutputReceiver<KV<Double, String>> receiver) {
+      receiver.output(KV.of(element.getValue().getRank(), element.getKey()));
+    }
+  }
 
   public static void main(String[] args) {
 
@@ -148,13 +159,16 @@ public class MinimalPageRankBatchu {
     PCollection<KV<String, RankedPageBatchu>> job2in = grouped.apply(ParDo.of(new Job1Finalizer()));
     
     PCollection<KV<String, RankedPageBatchu>> job2out = null; 
-    int iterations = 20;
+    int iterations = 50;
     for (int i = 1; i <= iterations; i++) {
       job2out= runJob2Iteration(job2in);
       job2in =job2out;
     }
-    
-    PCollection<String> pColLinkString = job2out.apply(
+    PCollection<KV<Double, String>> jobThree = job2out.apply(ParDo.of(new Job3()));
+
+    PCollection<KV<Double, String>> maxFinalRank = jobThree.apply(Combine.globally(Max.of(new RankedPageBatchu())));
+
+    PCollection<String> pColLinkString = maxFinalRank.apply(
       MapElements
       .into(TypeDescriptors.strings())
       .via((mergeOut)->mergeOut.toString()));
