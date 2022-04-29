@@ -18,7 +18,9 @@
 package edu.nwmissouri.sixmusketeers.vineethabatchu;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
@@ -118,7 +120,23 @@ public class MinimalPageRankBatchu {
       receiver.output(KV.of(element.getKey(),new RankedPageBatchu(element.getKey(), updatedRank, newVoters)));
   }
   }
+  static class Job3Finder extends DoFn<KV<String, RankedPageBatchu>, KV<String, Double>> {
+    @ProcessElement
+    public void processElement(@Element KV<String, RankedPageBatchu> element,
+        OutputReceiver<KV<String, Double>> receiver) {
+      String currentPage = element.getKey();
+      Double currentPageRank = element.getValue().getRank();
 
+      receiver.output(KV.of(currentPage, currentPageRank));
+    }
+  }
+
+  public static class Job3Final implements Comparator<KV<String, Double>>, Serializable {
+    @Override
+    public int compare(KV<String, Double> o1, KV<String, Double> o2) {
+      return o1.getValue().compareTo(o2.getValue());
+    }
+  }
 
   public static void main(String[] args) {
 
