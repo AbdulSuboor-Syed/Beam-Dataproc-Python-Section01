@@ -78,7 +78,8 @@ PageRank (PR) is a Google Search algorithm that ranks websites in search engine 
    - Completed Job 1 successfully.
    -	Completed Job 2 Voting and ranked Pages successfully.
    -	Completed Job 2 Mapper Successfully.
-   - Completed Job 2 Updater Successfully
+   - Completed Job 2 Updater Successfully.
+   - Completed Job 3 Successfully.
       
 
 
